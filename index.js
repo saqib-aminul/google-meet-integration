@@ -16,6 +16,8 @@ app.use(cookieSession({
 }));
 
 // --- Routes --- //
+app.get('/', (req, res) => res.send('Welcome to the Google Meet Link Generator!'))
+
 app.get('/auth/google', (req, res) => {
   const url = getAuthUrl();
   res.redirect(url);

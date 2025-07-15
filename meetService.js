@@ -30,5 +30,6 @@ export async function createMeetEvent(tokens, { startTime, endTime, attendees })
   const entryPoints = response.data.conferenceData?.entryPoints || [];
   const meetLink = entryPoints.find(e => e.entryPointType === 'video')?.uri;
 
-  return meetLink;
+  // return meetLink;
+  return { response, entryPoints, meetLink };
 }
