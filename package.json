@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "cookie-session": "^2.1.0",
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "googleapis": "^152.0.0",
+    "uuid": "^11.1.0"
+  }
+}
