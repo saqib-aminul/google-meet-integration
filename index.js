@@ -25,9 +25,9 @@ app.get('/auth/google', (req, res) => {
 
 app.get('/auth/google/callback', async (req, res) => {
   const code = req.query.code;
-  const tokens = await handleOAuthCallback(code);
-  req.session.tokens = tokens;
-  res.send("Google authentication successful! You may now create Meet links.");
+  // const tokens = await handleOAuthCallback(code);
+  // req.session.tokens = tokens;
+  res.json({ message: "Google authentication successful! here is your code", code });
 });
 
 app.get('/api/google/tokens', async (req, res) => {
