@@ -33,3 +33,20 @@ export async function createMeetEvent(tokens, { startTime, endTime, attendees })
   // return meetLink;
   return { response, entryPoints, meetLink };
 }
+
+export async function getCalendarEvents(tokens) {
+  const auth = new google.auth.OAuth2();
+  auth.setCredentials(tokens);
+
+  const calendar = google.calendar({ version: 'v3', auth });
+
+  const response = await calendar.events.list({
+    calendarId: 'primary',
+    timeMin: (new Date()).toISOString(),
+    maxResults: 10,
+    singleEvents: true,
+    orderBy: 'startTime',
+  });
+
+  return response.data.items;
+}

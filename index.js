@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import cookieSession from 'cookie-session';
 
 import { getAuthUrl, handleOAuthCallback } from './googleAuth.js';
-import { createMeetEvent } from './meetService.js';
+import { createMeetEvent, getCalendarEvents } from './meetService.js';
 
 dotenv.config();
 const app = express();
@@ -28,6 +28,39 @@ app.get('/auth/google/callback', async (req, res) => {
   const tokens = await handleOAuthCallback(code);
   req.session.tokens = tokens;
   res.send("Google authentication successful! You may now create Meet links.");
+});
+
+app.get('/api/google/tokens', async (req, res) => {
+  try {
+    const code = req.query.code;
+    console.log('code: ', code)
+    if (!code) {
+      return res.status(400).json({ error: 'Authorization code is missing.' });
+    }
+    const tokens = await handleOAuthCallback(code);
+    console.log('tokens: ', tokens)
+    res.json(tokens);
+  } catch (error) {
+    console.error('Error exchanging authorization code:', error);
+    res.status(500).json({ error: 'Failed to exchange authorization code for tokens.' });
+  }
+});
+
+app.get('/api/google/calendar-events', async (req, res) => {
+  try {
+    const code = req.query.code;
+    if (!code) {
+      return res.status(400).json({ error: 'Authorization code is missing.' });
+    }
+
+    const tokens = await handleOAuthCallback(code);
+    const events = await getCalendarEvents(tokens);
+
+    res.json({ tokens, events });
+  } catch (error) {
+    console.error('Error fetching calendar events:', error);
+    res.status(500).json({ error: 'Failed to fetch calendar events.' });
+  }
 });
 
 app.post('/google-meet/create', async (req, res) => {
