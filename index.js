@@ -25,9 +25,9 @@ app.get('/auth/google', (req, res) => {
 
 app.get('/auth/google/callback', async (req, res) => {
   const code = req.query.code;
-  // const tokens = await handleOAuthCallback(code);
-  // req.session.tokens = tokens;
-  res.json({ message: "Google authentication successful! here is your code", code });
+  const tokens = await handleOAuthCallback(code);
+  req.session.tokens = tokens;
+  res.json({ message: "Google authentication successful! here is your code", code, tokens });
 });
 
 app.get('/api/google/tokens', async (req, res) => {
@@ -48,15 +48,12 @@ app.get('/api/google/tokens', async (req, res) => {
 
 app.get('/api/google/calendar-events', async (req, res) => {
   try {
-    const code = req.query.code;
-    if (!code) {
-      return res.status(400).json({ error: 'Authorization code is missing.' });
+    if (!req.session.tokens) {
+      return res.status(401).json({ error: 'User not authenticated with Google.' });
     }
 
-    const tokens = await handleOAuthCallback(code);
-    const events = await getCalendarEvents(tokens);
-
-    res.json({ tokens, events });
+    const response = await getCalendarEvents(req.session.tokens);
+    res.json({response});
   } catch (error) {
     console.error('Error fetching calendar events:', error);
     res.status(500).json({ error: 'Failed to fetch calendar events.' });

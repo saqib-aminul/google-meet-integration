@@ -40,6 +40,9 @@ export async function getCalendarEvents(tokens) {
 
   const calendar = google.calendar({ version: 'v3', auth });
 
+  const list = await calendar.calendarList.list()
+  console.log({ list })
+
   const response = await calendar.events.list({
     calendarId: 'primary',
     timeMin: (new Date()).toISOString(),
@@ -48,5 +51,5 @@ export async function getCalendarEvents(tokens) {
     orderBy: 'startTime',
   });
 
-  return response.data.items;
+  return { response, list };
 }
