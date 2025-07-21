@@ -26,3 +26,9 @@ export async function handleOAuthCallback(code) {
   const { tokens } = await oauth2Client.getToken(code);
   return tokens;
 }
+
+export async function refreshAccessToken(refreshToken) {
+  oauth2Client.setCredentials({ refresh_token: refreshToken });
+  const { credentials } = await oauth2Client.refreshAccessToken();
+  return credentials;
+}

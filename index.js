@@ -2,7 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cookieSession from 'cookie-session';
 
-import { getAuthUrl, handleOAuthCallback } from './googleAuth.js';
+import { getAuthUrl, handleOAuthCallback, refreshAccessToken } from './googleAuth.js';
 import { createMeetEvent, getCalendarEvents } from './meetService.js';
 
 dotenv.config();
@@ -77,6 +77,20 @@ app.post('/google-meet/create', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to create Google Meet link." });
+  }
+});
+
+app.post('/auth/google/refresh-token', async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+    if (!refreshToken) {
+      return res.status(400).json({ error: 'Refresh token is missing.' });
+    }
+    const newTokens = await refreshAccessToken(refreshToken);
+    res.json(newTokens);
+  } catch (error) {
+    console.error('Error refreshing access token:', error);
+    res.status(500).json({ error: 'Failed to refresh access token.' });
   }
 });
 
