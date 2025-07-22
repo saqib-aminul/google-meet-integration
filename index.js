@@ -61,13 +61,13 @@ app.get('/api/google/calendar-events', async (req, res) => {
 });
 
 app.post('/google-meet/create', async (req, res) => {
-  if (!req.session.tokens) {
+  if (!req.body.tokens) {
     return res.status(401).json({ error: "User not authenticated with Google." });
   }
 
   try {
-    const { startTime, endTime, attendees = [] } = req.body;
-    const meetLink = await createMeetEvent(req.session.tokens, {
+    const { tokens, startTime, endTime, attendees = [] } = req.body;
+    const meetLink = await createMeetEvent(tokens, {
       startTime,
       endTime,
       attendees
