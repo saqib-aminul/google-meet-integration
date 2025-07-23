@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { google } from 'googleapis';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -31,4 +32,14 @@ export async function refreshAccessToken(refreshToken) {
   oauth2Client.setCredentials({ refresh_token: refreshToken });
   const { credentials } = await oauth2Client.refreshAccessToken();
   return credentials;
+}
+
+export async function validateAccessToken(access_token) {
+  try {
+    const response = await axios.get(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${access_token}`);
+    return response.data
+  } catch (error) {
+    console.log(error)
+    return error
+  }
 }
