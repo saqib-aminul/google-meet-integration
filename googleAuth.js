@@ -30,8 +30,9 @@ export async function handleOAuthCallback(code) {
 
 export async function refreshAccessToken(refreshToken) {
   oauth2Client.setCredentials({ refresh_token: refreshToken });
-  const { credentials } = await oauth2Client.refreshAccessToken();
-  return credentials;
+  // const { credentials } = await oauth2Client.refreshAccessToken();
+  const response = await oauth2Client.getAccessToken();
+  return response?.res?.data;
 }
 
 export async function validateAccessToken(access_token) {
@@ -42,4 +43,5 @@ export async function validateAccessToken(access_token) {
     console.log(error)
     return error
   }
+  
 }

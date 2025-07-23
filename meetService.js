@@ -36,7 +36,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export async function createMeetEvent(tokens, { startTime, endTime, attendees }) {
   const auth = new google.auth.OAuth2();
-  auth.setCredentials(tokens);
+  auth.setCredentials({ access_token: tokens?.access_token });
 
   const calendar = google.calendar({ version: 'v3', auth });
 
