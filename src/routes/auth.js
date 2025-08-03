@@ -8,12 +8,6 @@ router.get('/google', (req, res) => {
   res.redirect(url);
 });
 
-router.get('/google/callback', async (req, res) => {
-  const code = req.query.code;
-  const tokens = await handleOAuthCallback(code);
-  req.session.tokens = tokens;
-  res.json({ message: "Google authentication successful! here is your code", code, tokens });
-});
 
 router.get('/google/tokens', async (req, res) => {
   try {

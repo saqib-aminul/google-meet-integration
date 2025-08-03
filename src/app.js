@@ -4,6 +4,7 @@ import cookieSession from 'cookie-session';
 
 import authRoutes from './routes/auth.js';
 import calendarRoutes from './routes/calendar.js';
+import { handleOAuthCallback } from './config/auth.js';
 
 dotenv.config();
 const app = express();
@@ -18,7 +19,14 @@ app.use(cookieSession({
 // Routes
 app.get('/', (req, res) => res.send('Welcome to the Google Meet Link Generator!'));
 
-app.use('/auth', authRoutes);
+app.get('/google/callback', async (req, res) => {
+    const code = req.query.code;
+    const tokens = await handleOAuthCallback(code);
+    req.session.tokens = tokens;
+    res.json({ message: "Google authentication successful! here is your code", code, tokens });
+});
+
+app.use('/auth', authRoutes);  
 app.use('/api/google/calendar', calendarRoutes);
 
 const PORT = process.env.PORT || 3000;
