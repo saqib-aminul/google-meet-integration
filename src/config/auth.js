@@ -38,10 +38,13 @@ export async function refreshAccessToken(refreshToken) {
 export async function validateAccessToken(access_token) {
   try {
     const response = await axios.get(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${access_token}`);
-    return response.data
+    return response.data;
   } catch (error) {
-    console.log(error)
-    return error
+    if (error.response && error.response.status === 400) {
+      // Token is invalid or expired
+      return { valid: false, message: "Invalid or expired access token" };
+    }
+    console.log(error);
+    return { valid: false, message: "Error validating access token", error };
   }
-  
 }
