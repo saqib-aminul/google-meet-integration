@@ -195,3 +195,49 @@ export async function getCalendarEvents(tokens) {
 
   return { response, list };
 }
+
+export async function watchCalendar(tokens, channel) {
+  const auth = new google.auth.OAuth2();
+  auth.setCredentials({ access_token: tokens?.access_token });
+
+  const calendar = google.calendar({ version: 'v3', auth });
+
+  try {
+    const response = await calendar.events.watch({
+      calendarId: 'primary',
+      requestBody: {
+        id: channel.id,           // Unique channel ID
+        type: 'web_hook',
+        address: channel.address, // Your public HTTPS endpoint
+        token: channel.token,     // Optional: verification token
+        params: {
+          ttl: '3600'            // Time to live in seconds (max 24 hours)
+        }
+      }
+    });
+    
+    return response.data;
+  } catch (error) {
+    console.error('Error setting up watch:', error);
+    throw error;
+  }
+}
+
+export async function stopWatch(tokens, channelId, resourceId) {
+  const auth = new google.auth.OAuth2();
+  auth.setCredentials({ access_token: tokens?.access_token });
+
+  const calendar = google.calendar({ version: 'v3', auth });
+
+  try {
+    await calendar.channels.stop({
+      requestBody: {
+        id: channelId,
+        resourceId: resourceId
+      }
+    });
+  } catch (error) {
+    console.error('Error stopping watch:', error);
+    throw error;
+  }
+}
