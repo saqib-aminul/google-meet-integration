@@ -182,18 +182,19 @@ export async function getCalendarEvents(tokens) {
 
   const calendar = google.calendar({ version: 'v3', auth });
 
-  const list = await calendar.calendarList.list()
-  console.log({ list })
+  // const list = await calendar.calendarList.list()
+  // console.log({ list })
 
   const response = await calendar.events.list({
     calendarId: 'primary',
     timeMin: (new Date()).toISOString(),
     maxResults: 10,
     singleEvents: true,
+    showDeleted: tokens?.id_deleted ? true : false,
     orderBy: 'startTime',
   });
 
-  return { response, list };
+  return { response };
 }
 
 export async function watchCalendar(tokens, channel) {
