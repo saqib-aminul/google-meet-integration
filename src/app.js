@@ -4,6 +4,7 @@ import cookieSession from 'cookie-session';
 
 import authRoutes from './routes/auth.js';
 import calendarRoutes from './routes/calendar.js';
+import taskRoutes from './routes/tasks.js';
 import { handleOAuthCallback } from './config/auth.js';
 
 dotenv.config();
@@ -28,6 +29,7 @@ app.get('/google/callback', async (req, res) => {
 
 app.use('/auth', authRoutes);  
 app.use('/api/google/calendar', calendarRoutes);
+app.use('/api/google/tasks', taskRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server started on http://localhost:${PORT}`));
